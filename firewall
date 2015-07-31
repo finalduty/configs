@@ -1,0 +1,75 @@
+### finalduty@github.com [rev: 8fe4548]
+#!/bin/bash
+I="iptables -A INPUT"
+O="iptables -A OUTPUT"
+F="iptables -A FORWARD"
+MODULES="ip_conntrack_ftp"
+
+# Load additional necessary modules
+for module in $MODULES; do
+ /sbin/modprobe $module
+done
+
+SERVER_IP=""
+CUSTOMER_IP=""
+
+########################################################################
+# Flush all existing rules, allow loopback traffic, useful ICMP,
+# existing connections and management services not hosted here.
+########################################################################
+
+iptables -F
+iptables -X
+ip6tables -F
+ip6tables -X
+ip6tables -A INPUT -j REJECT
+ip6tables -A OUTPUT -j REJECT
+ip6tables -A FORWARD -j REJECT
+
+$I -i lo -j ACCEPT
+$I -p icmp --fragment -j DROP
+$I -p icmp --icmp-type echo-request -j ACCEPT
+$I -p icmp --icmp-type echo-reply -j ACCEPT
+$I -p icmp --icmp-type destination-unreachable -j ACCEPT
+$I -p icmp --icmp-type time-exceeded -j ACCEPT
+$I -p icmp -j DROP
+
+########################################################################
+# Private Services 
+########################################################################
+$I -m state --state ESTABLISHED,RELATED -j ACCEPT
+$I -d $SERVER_IP -s 119.47.119.238 -p tcp --dport 22 -j ACCEPT		# ssh, webdrive access
+$I -d $SERVER_IP -s 119.47.119.239 -p tcp --dport 22 -j ACCEPT		# ssh, webdrive access
+$I -d $SERVER_IP -s 202.89.43.31 -p tcp --dport 22 -j ACCEPT		# ssh, webdrive monitoring
+$I -d $SERVER_IP -s 119.47.119.31 -p tcp --dport 22 -j ACCEPT		# ssh, webdrive monitoring
+$I -d $SERVER_IP -s $CUSTOMER_IP -p tcp --dport 22 -j ACCEPT		# ssh, customer
+$I -d $SERVER_IP -s 202.89.43.31 -p tcp --dport 5666 -j ACCEPT		# nagios, monitoring
+$I -d $SERVER_IP -s 119.47.119.31 -p tcp --dport 5666 -j ACCEPT		# nagios, monitoring
+
+########################################################################
+# Inbound Services - uncomment as needed
+########################################################################
+# $I -d $SERVER_IP -p tcp --dport 80 -j ACCEPT				# HTTP
+# $I -d $SERVER_IP -p tcp --dport 443 -j ACCEPT				# HTTPS
+# $I -d $SERVER_IP -p tcp --dport 25 -j ACCEPT				# SMTP
+# $I -d $SERVER_IP -p tcp --dport 21 -j ACCEPT				# FTP
+# $I -d $SERVER_IP -p tcp --dport 9500:9550 -j ACCEPT			# FTP data	
+# $I -d $SERVER_IP -p tcp --dport 8443 -j ACCEPT			# Plesk control panel
+# $I -d $SERVER_IP -p tcp --dport 110 -j ACCEPT				# POP
+# $I -d $SERVER_IP -p tcp --dport 995 -j ACCEPT				# POPS
+# $I -d $SERVER_IP -p tcp --dport 143 -j ACCEPT				# IMAP
+# $I -d $SERVER_IP -p tcp --dport 993 -j ACCEPT				# IMAPS
+# $I -d $SERVER_IP -p tcp --dport 465 -j ACCEPT				# SMTPS
+
+########################################################################
+# Outbound Services
+########################################################################
+$O -j ACCEPT
+
+########################################################################
+# Our policy - deny everything not explicitly allowed
+########################################################################
+$I -j REJECT
+$O -j REJECT
+$F -j REJECT
+

@@ -1,0 +1,14 @@
+### andy@webdrive.co.nz [rev: 910e111]
+#!/bin/bash
+
+## Aliases
+alias rpi='ssh `cat ~/docs/myip.txt`'
+alias passgen='apg -n3 -m12 -x12 -M NCL -qt -c `head -1 /dev/urandom`'
+alias pacman='sudo pacman'
+alias docker='sudo docker'
+
+## Functions
+vermp() { 
+  sed -i -e "1i ### `git config user.email` [rev: `printf "%x\n" $(date +%y%j%H%M)`\]" -e '/^#.*@.*rev/'d $1 && head -1 $1; 
+}
+
