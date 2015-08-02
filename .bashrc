@@ -20,7 +20,7 @@ alias ssh='ssh -At'
 
 ssh-add &>/dev/null
 
-[ -f ~/.bashrc_local ] && ~/.bashrc_local
+[ -f ~/.bashrc_local ] && . ~/.bashrc_local
 [ -f ~/.aliases ] && . ~/.aliases
 [ -f ~/.aliases_local ] && . ~/.aliases_local
 
