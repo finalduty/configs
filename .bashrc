@@ -1,4 +1,4 @@
-### andy@webdrive.co.nz [rev: 910e111]
+### finalduty@github.com [rev: 91180c3]
 [[ $- != *i* ]] && return
 
 shopt -s checkwinsize
@@ -18,8 +18,9 @@ alias grep='grep --color=always'
 alias egrep='egrep --color=always'
 alias ssh='ssh -At'
 
-ssh-add
+ssh-add &>/dev/null
 
+[ -f ~/.bashrc_local ] && ~/.bashrc_local
 [ -f ~/.aliases ] && . ~/.aliases
 [ -f ~/.aliases_local ] && . ~/.aliases_local
 
