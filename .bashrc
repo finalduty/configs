@@ -3,7 +3,6 @@
 
 shopt -s checkwinsize
 shopt -s histappend
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 export HISTCONTROL=ignoredups:ignorespace
 export HISTTIMEFORMAT="%F %T "
 export EDITOR="/usr/bin/vim"
@@ -17,8 +16,6 @@ alias ls='ls --color=auto'
 alias grep='grep --color=always'
 alias egrep='egrep --color=always'
 alias ssh='ssh -At'
-
-ssh-add &>/dev/null
 
 [ -f ~/.bashrc_local ] && . ~/.bashrc_local
 [ -f ~/.aliases ] && . ~/.aliases
