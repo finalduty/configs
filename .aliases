@@ -1,9 +1,8 @@
-### andy@webdrive.co.nz [rev: 910e111]
+### finalduty@github.com [rev: 99971dd]
 #!/bin/bash
 
 ## Aliases
 alias rpi='ssh `cat ~/docs/myip.txt`'
-#alias passgen='apg -n3 -m12 -x12 -M NCL -qt -c `head -1 /dev/urandom`'
 alias passgen='for i in {1..3}; do; openssl rand -rand /dev/urandom -base64 15 2>/dev/null| head -c12; echo; done'
 alias pacman='sudo pacman'
 alias docker='sudo docker'
@@ -13,3 +12,5 @@ vermp() {
   sed -i -e "1i ### `git config user.email` [rev: `printf "%x\n" $(date +%y%j%H%M)`\]" -e '/^#.*@.*rev/'d $1 && head -1 $1; 
 }
 
+## Includes
+[ -f ~/.aliases_local ] &&  . ~/.aliases_local
