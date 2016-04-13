@@ -1,4 +1,4 @@
-### finalduty@github.com [rev: 99971dd]
+### finalduty@github.com [rev: 99971e0]
 #!/bin/bash
 
 ## Aliases
@@ -12,5 +12,3 @@ vermp() {
   sed -i -e "1i ### `git config user.email` [rev: `printf "%x\n" $(date +%y%j%H%M)`\]" -e '/^#.*@.*rev/'d $1 && head -1 $1; 
 }
 
-## Includes
-[ -f ~/.aliases_local ] &&  . ~/.aliases_local
