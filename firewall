@@ -1,23 +1,38 @@
-### finalduty@github.com [rev: 8fe4548]
+### andy@webdrive.co.nz [rev: 98e5112]
 #!/bin/bash
+
+### Set variables here to turn on or off rules ###
+
+## Feature restriction variables to [0,1,2] - (0 = off, 1 = MGMT & CUST ONLY, 2 = Public)
+CPANEL=0
+DNS=0
+FTP=0
+MAIL=0
+MYSQL=0
+PLESK=0
+WEB=0
+
+## IP restriction variables (Multiple IPs can be comma seperated)
+CUST_IPS=""
+MGMT_IPS="172.16.253.0/24,172.16.252.0/24"
+CLI_IPS="119.47.119.238,119.47.119.239"
+MONITOR_IPS="119.47.119.33,112.109.72.32/28"
+
+### Don't Edit Below This Line ###
+## Rule Aliases
 I="iptables -A INPUT"
 O="iptables -A OUTPUT"
 F="iptables -A FORWARD"
-MODULES="ip_conntrack_ftp"
+M="iptables -A MGMT -s $MONITOR_IPS,$MGMT_IPS"
+C="iptables -A CUST -s $CUST_IPS"
+P="iptables -A PUBLIC"
+L='iptables -A ICMP'
+R='iptables -A PROTO'
 
-# Load additional necessary modules
-for module in $MODULES; do
- /sbin/modprobe $module
-done
+## Service restriction variables
+FAIL2BAN=`which fail2ban-client &>/dev/null; echo $?`
 
-SERVER_IP=""
-CUSTOMER_IP=""
-
-########################################################################
-# Flush all existing rules, allow loopback traffic, useful ICMP,
-# existing connections and management services not hosted here.
-########################################################################
-
+## Reset active rules
 iptables -F
 iptables -X
 ip6tables -F
@@ -26,50 +41,96 @@ ip6tables -A INPUT -j REJECT
 ip6tables -A OUTPUT -j REJECT
 ip6tables -A FORWARD -j REJECT
 
+## Loopback rules
 $I -i lo -j ACCEPT
-$I -p icmp --fragment -j DROP
-$I -p icmp --icmp-type echo-request -j ACCEPT
-$I -p icmp --icmp-type echo-reply -j ACCEPT
-$I -p icmp --icmp-type destination-unreachable -j ACCEPT
-$I -p icmp --icmp-type time-exceeded -j ACCEPT
-$I -p icmp -j DROP
+$O -o lo -j ACCEPT
 
-########################################################################
-# Private Services 
-########################################################################
-$I -m state --state ESTABLISHED,RELATED -j ACCEPT
-$I -d $SERVER_IP -s 119.47.119.238 -p tcp --dport 22 -j ACCEPT		# ssh, webdrive access
-$I -d $SERVER_IP -s 119.47.119.239 -p tcp --dport 22 -j ACCEPT		# ssh, webdrive access
-$I -d $SERVER_IP -s 202.89.43.31 -p tcp --dport 22 -j ACCEPT		# ssh, webdrive monitoring
-$I -d $SERVER_IP -s 119.47.119.31 -p tcp --dport 22 -j ACCEPT		# ssh, webdrive monitoring
-$I -d $SERVER_IP -s $CUSTOMER_IP -p tcp --dport 22 -j ACCEPT		# ssh, customer
-$I -d $SERVER_IP -s 202.89.43.31 -p tcp --dport 5666 -j ACCEPT		# nagios, monitoring
-$I -d $SERVER_IP -s 119.47.119.31 -p tcp --dport 5666 -j ACCEPT		# nagios, monitoring
+## Create Subchains
+iptables -N PROTO 	&& $I -m state ! --state ESTABLISHED -j PROTO
+iptables -N ICMP 	&& $I -p icmp -j ICMP && $O -p icmp -j ICMP
+iptables -N MGMT 	&& $I ! -i lo -j MGMT
+iptables -N CUST    && $I ! -i lo -j CUST
+[ $FAIL2BAN -eq 0 ] 	&& iptables -N FAIL2BAN && $I ! -i lo -j FAIL2BAN
+iptables -N PUBLIC 	&& $I ! -i lo -m state --state NEW -j PUBLIC
 
-########################################################################
-# Inbound Services - uncomment as needed
-########################################################################
-# $I -d $SERVER_IP -p tcp --dport 80 -j ACCEPT				# HTTP
-# $I -d $SERVER_IP -p tcp --dport 443 -j ACCEPT				# HTTPS
-# $I -d $SERVER_IP -p tcp --dport 25 -j ACCEPT				# SMTP
-# $I -d $SERVER_IP -p tcp --dport 21 -j ACCEPT				# FTP
-# $I -d $SERVER_IP -p tcp --dport 9500:9550 -j ACCEPT			# FTP data	
-# $I -d $SERVER_IP -p tcp --dport 8443 -j ACCEPT			# Plesk control panel
-# $I -d $SERVER_IP -p tcp --dport 110 -j ACCEPT				# POP
-# $I -d $SERVER_IP -p tcp --dport 995 -j ACCEPT				# POPS
-# $I -d $SERVER_IP -p tcp --dport 143 -j ACCEPT				# IMAP
-# $I -d $SERVER_IP -p tcp --dport 993 -j ACCEPT				# IMAPS
-# $I -d $SERVER_IP -p tcp --dport 465 -j ACCEPT				# SMTPS
+## Protocol Filters
+$R -p tcp ! --syn -m state --state NEW -j DROP -m comment --comment "Drop SynFlood Packets"
+$R -m state --state INVALID -j REJECT
+$R -p tcp -j RETURN
+$R -p udp -j RETURN
+$R -p icmp -j RETURN
+$R -j DROP
 
-########################################################################
-# Outbound Services
-########################################################################
-$O -j ACCEPT
+## ICMP Rules
+$L -p icmp --fragment -j DROP
+$L -p icmp --icmp-type echo-request -j ACCEPT
+$L -p icmp --icmp-type echo-reply -j ACCEPT
+$L -p icmp --icmp-type destination-unreachable -j ACCEPT
+$L -p icmp --icmp-type time-exceeded -j ACCEPT
+$L -p icmp -j REJECT
 
-########################################################################
-# Our policy - deny everything not explicitly allowed
-########################################################################
+## Management Services 
+iptables -A MGMT -s $CLI_IPS -p tcp --dport 22 -j ACCEPT
+$M -p tcp --dport 6556 -j ACCEPT
+[ $DNS -eq 1 ] 		&& $M -p tcp --dport 53 -j ACCEPT
+[ $DNS -eq 1 ] 		&& $M -p udp --dport 53 -j ACCEPT
+[ $WEB -eq 1 ] 		&& $M -p tcp -m multiport --dports 80,443 -j ACCEPT
+[ $FTP -eq 1 ] 		&& $M -p tcp -m multiport --dports 21,9500:9550 -j ACCEPT
+[ $MAIL -eq 1 ] 	&& $M -p tcp -m multiport --dports 25,465,110,143,993,995 -j ACCEPT
+[ $PLESK -eq 1 ] 	&& $M -p tcp --dport 8443 -j ACCEPT
+[ $CPANEL -eq 1 ] 	&& $M -p tcp -m multiport --dports 2083,2087 -j ACCEPT
+
+## Client Services
+if [[ $CUST_IPS != '' ]]; then
+  $C -p tcp --dport 22 -j ACCEPT
+  $C -p tcp -m multiport --dports 21,9500:9550 -j ACCEPT
+  [ $DNS -eq 1 ] 	&& $C -p tcp --dport 53 -j ACCEPT
+  [ $DNS -eq 1 ] 	&& $C -p udp --dport 53 -j ACCEPT
+  [ $WEB -eq 1 ] 	&& $C -p tcp -m multiport --dports 80,443 -j ACCEPT
+  [ $FTP -eq 1 ] 	&& $C -p tcp -m multiport --dports 21,9500:9550 -j ACCEPT
+  [ $MAIL -eq 1 ] 	&& $C -p tcp -m multiport --dports 25,465,110,143,993,995 -j ACCEPT
+  [ $PLESK -eq 1 ] 	&& $C -p tcp --dport 8443 -j ACCEPT
+  [ $CPANEL -eq 1 ] && $C -p tcp -m multiport --dports 2083,2087 -j ACCEPT
+  [ $MYSQL -eq 1 ] 	&& $C -p tcp --dport 3306 -j ACCEPT
+fi
+
+## Public Services
+[ $DNS -eq 2 ] 		&& $P -p tcp --dport 53 -j ACCEPT
+[ $DNS -eq 2 ] 		&& $P -p udp --dport 53 -j ACCEPT
+[ $WEB -eq 2 ] 		&& $P -p tcp -m multiport --dports 80,443 -j ACCEPT
+[ $FTP -eq 2 ] 		&& $P -p tcp -m multiport --dports 21,9500:9550 -j ACCEPT
+[ $MAIL -eq 2 ] 	&& $P -p tcp -m multiport --dports 25,465,110,143,993,995 -j ACCEPT
+[ $PLESK -eq 2 ] 	&& $P -p tcp --dport 8443 -j ACCEPT
+[ $CPANEL -eq 2 ] 	&& $P -p tcp -m multiport --dports 2083,2087 -j ACCEPT
+[ $MYSQL -eq 2 ] 	&& $P -p tcp --dport 3306 -j ACCEPT
+
+## Outbound Services
+for i in `awk '/nameserver/ {print $2}' /etc/resolv.conf`; do 
+  $O -d $i -p tcp --dport 53 -j ACCEPT
+  $O -d $i -p udp --dport 53 -j ACCEPT
+done
+for i in {1..3}; do 
+  $O -d ntp$i.ublr.net -p tcp --dport 123 -j ACCEPT
+done
+$O -d mirror.webhost.co.nz -p tcp -m multiport --dports 80,443 -j ACCEPT
+$O -d git.webhost.co.nz -p tcp --dport 443 -j ACCEPT
+$O -d salt.ublr.net -p tcp -m multiport --dports 4505,4506 -j ACCEPT     # SaltStack
+
+## Allow Established Connections
+$I -m state --state ESTABLISHED -j ACCEPT
+iptables -I OUTPUT 3 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+## Default Policies for Everything Else
 $I -j REJECT
-$O -j REJECT
+$O -j ACCEPT
 $F -j REJECT
+
+## Make Reboot Safe for CentOS
+if [ `grep -c 'Red Hat' /proc/version` -eq 1 ]; then
+  iptables-save > /etc/sysconfig/iptables
+  ip6tables-save > /etc/sysconfig/ip6tables
+fi
+
+## Restart services if they exist
+[ $FAIL2BAN -eq 0 ] && service fail2ban restart
 
