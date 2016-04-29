@@ -1,7 +1,9 @@
-123668d3a51ed103ade3c8712efc3a59  ./.aliases
+2e508fed569d1b23ec992d8e871082be  ./.aliases
+26e67138b1a438ad5344b9e919bc0d8a  ./.toprc
 d7e5dc6a9fa14d7c58a87d0dbb423183  ./.vimrc
 b9f92e9e948f7bf0cd04ace354cbe9bc  ./logrotate.conf
+c33476d87708ffcf6938f64f0f157415  ./mksums.sh
 124d37a784562f388a9b13bb70f06a1c  ./.bashrc
 0c8c2e4209ddeecfff511b751303676e  ./README.md
-e800e1c4f907b0227312d2b6947353f1  ./firewall
+af12294426e48e79d6e05b341e538f4a  ./firewall
 1aeaa365502c86cf7db52889c97941cf  ./authorized_keys
