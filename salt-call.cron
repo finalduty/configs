@@ -1,1 +1,1 @@
-*/15 * * * * root salt-call --master=salt.finalduty.me state.highstate &>/dev/null
+*/15 * * * * root nice salt-call --master=salt.finalduty.me state.highstate &>/dev/null
