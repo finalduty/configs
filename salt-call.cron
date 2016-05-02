@@ -1,1 +1,2 @@
+### andy.dustin@gmail.com [rev: 99c34a6]
 */15 * * * * root nice salt-call --master=salt.finalduty.me state.highstate &>/dev/null
