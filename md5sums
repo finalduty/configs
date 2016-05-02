@@ -6,6 +6,7 @@ d7e5dc6a9fa14d7c58a87d0dbb423183  ./.vimrc
 6c7b3b9302983a4f6148c03c342bd3b1  ./mksums.sh
 124d37a784562f388a9b13bb70f06a1c  ./.bashrc
 0c8c2e4209ddeecfff511b751303676e  ./README.md
+5254e2a5e0164c592e2418f75bd3b9d7  ./rsyslog.conf
 af12294426e48e79d6e05b341e538f4a  ./firewall
 aa48591d0bf0f98bbf0bb233bd37e1ac  ./.gitconfig
 1aeaa365502c86cf7db52889c97941cf  ./authorized_keys
