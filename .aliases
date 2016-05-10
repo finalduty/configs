@@ -1,4 +1,4 @@
-### finalduty@github.com [rev: 99971e0]
+### andy.dustin@gmail.com [rev: 99d6ba4]
 #!/bin/bash
 
 ## Aliases
@@ -6,6 +6,7 @@ alias rpi='ssh `cat ~/docs/myip.txt`'
 alias passgen='for i in {1..3}; do; openssl rand -rand /dev/urandom -base64 15 2>/dev/null| head -c12; echo; done'
 alias pacman='sudo pacman'
 alias docker='sudo docker'
+alias lh='ls -Ahl'
 
 ## Functions
 vermp() { 
