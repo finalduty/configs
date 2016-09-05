@@ -13,6 +13,7 @@ export EDITOR="/usr/bin/vim"
 
 umask 027
 alias ls='ls --color=auto'
+alias mv='mv -iv'
 alias grep='grep --color=always'
 alias egrep='egrep --color=always'
 alias ssh='ssh -At'
