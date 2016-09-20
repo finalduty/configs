@@ -1,4 +1,4 @@
-### finalduty@github.com [rev: 91180c3]
+### andy.dustin@gmail.com [rev: 9b1b5c6]
 [[ $- != *i* ]] && return
 
 shopt -s checkwinsize
@@ -7,8 +7,8 @@ export HISTCONTROL=ignoredups:ignorespace
 export HISTTIMEFORMAT="%F %T "
 export EDITOR="/usr/bin/vim"
 
-[ $(id -u) -ne 0 ] && PS1='[\[\033[01;32m\]\u@\h\[\033[00m\] \l \[\033[01;34m\]\w\[\033[00m\]]$ '
-[ $(id -u) -eq 0 ] && PS1='[\[\033[01;31m\]\u@\h\[\033[00m\] \l \[\033[01;34m\]\w\[\033[00m\]]# '
+[ $(id -u) -ne 0 ] && PS1='\e[0m[\e[1;32m\u@\h\e[0m \l \e[1;34m\w\e[0m]\$ '
+[ $(id -u) -eq 0 ] && PS1='\e[0m[\e[1;31m\u@\h\e[0m \l \e[1;34m\w\e[0m]\$ '
 [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
 umask 027
@@ -18,7 +18,5 @@ alias grep='grep --color=always'
 alias egrep='egrep --color=always'
 alias ssh='ssh -At'
 
-[ -f ~/.bashrc_local ] && . ~/.bashrc_local
 [ -f ~/.aliases ] && . ~/.aliases
-[ -f ~/.aliases_local ] && . ~/.aliases_local
 
