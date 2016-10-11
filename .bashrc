@@ -1,4 +1,4 @@
-### andy.dustin@gmail.com [rev: 9b1b5c6]
+### andy.dustin@gmail.com [rev: 9b4ea04]
 [[ $- != *i* ]] && return
 
 shopt -s checkwinsize
