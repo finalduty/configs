@@ -7,8 +7,8 @@ export HISTCONTROL=ignoredups:ignorespace
 export HISTTIMEFORMAT="%F %T "
 export EDITOR="/usr/bin/vim"
 
-[ $(id -u) -ne 0 ] && PS1='\e[0m[\[\e[1;32m\]\u@\h\[\e[0m\] \l \[\e[1;34m\]\w\[\e[0m\]\e[95m`parse_git_branch`\e[0m]\$ '
-[ $(id -u) -eq 0 ] && PS1='\e[0m[\[\e[1;31m\]\u@\h\[\e[0m\] \l \[\e[1;34m\]\w\[\e[0m\]\e[95m`parse_git_branch`\e[0m]\$ '
+[ $(id -u) -ne 0 ] && PS1='\[\e[0m[\[\[\e[1;32m\]\u@\h\[\[\e[0m\] \l \[\[\e[1;34m\]\w\[\[\e[0m\]\[\e[95m`parse_git_branch`\[\e[0m]\$ '
+[ $(id -u) -eq 0 ] && PS1='\[\e[0m[\[\[\e[1;31m\]\u@\h\[\[\e[0m\] \l \[\[\e[1;34m\]\w\[\[\e[0m\]\[\e[95m`parse_git_branch`\[\e[0m]\$ '
 [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
 umask 027
