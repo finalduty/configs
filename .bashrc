@@ -1,4 +1,4 @@
-### andy.dustin@gmail.com [rev:9bc3ea8]
+### andy.dustin@gmail.com [rev:9bd9aa5]
 [[ $- != *i* ]] && return
 
 shopt -s checkwinsize
@@ -20,6 +20,7 @@ alias mv='mv -iv'
 alias rm='rm -v'
 alias ssh='ssh -At'
 alias vermp="echo $(printf "%x\n" $(date +%y%j%H%M))"
+alias systemctl='systemctl --no-pager'
 
 parse_git_branch() {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1) /'
