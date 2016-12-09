@@ -14,12 +14,11 @@ export EDITOR="/usr/bin/vim"
 [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
 umask 027
-alias ls='ls -G'
+alias ls='ls --color=always'
 alias cp='cp -iv'
 alias mv='mv -iv'
 alias rm='rm -v'
 alias ssh='ssh -At'
-alias vermp="echo $(printf "%x\n" $(date +%y%j%H%M))"
 alias systemctl='systemctl --no-pager'
 
 parse_git_branch() {
