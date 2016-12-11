@@ -1,4 +1,4 @@
-### andy.dustin@gmail.com [rev:9bd9aa5]
+### andy.dustin@gmail.com [rev:9be3aaa]
 [[ $- != *i* ]] && return
 
 shopt -s checkwinsize
@@ -15,6 +15,8 @@ export EDITOR="/usr/bin/vim"
 
 umask 027
 alias ls='ls --color=always'
+alias chmod='chmod -c'
+alias chown='chown -c'
 alias cp='cp -iv'
 alias mv='mv -iv'
 alias rm='rm -v'
