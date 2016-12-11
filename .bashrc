@@ -14,14 +14,13 @@ export EDITOR="/usr/bin/vim"
 [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
 umask 027
-alias ls='ls --color=always'
 alias chmod='chmod -c'
 alias chown='chown -c'
 alias cp='cp -iv'
+alias ls='ls --color=always'
 alias mv='mv -iv'
 alias rm='rm -v'
 alias ssh='ssh -At'
-alias systemctl='systemctl --no-pager'
 
 parse_git_branch() {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1) /'

@@ -1,10 +1,19 @@
 #!/bin/bash
-### andy.dustin@gmail.com [rev:9bc3b17]
+### andy.dustin@gmail.com [rev:9be3ab6]
 
 ## Aliases
-alias rpi='ssh `cat ~/docs/myip.txt`'
-alias passgen='for i in {1..3}; do openssl rand -rand /dev/urandom -base64 15 2>/dev/null| head -c12; echo; done'
-alias pacman='sudo pacman'
 alias docker='sudo docker'
-alias lh='ls -Ahl'
+alias pacman='sudo pacman'
+alias rpi='ssh `cat ~/docs/myip.txt`'
+alias systemctl='systemctl --no-pager'
 
+## Functions
+passgen() {
+  for i in {1..3}; do 
+    echo $(openssl rand -rand /dev/urandom -base64 15 2>/dev/null | head -c10) 
+  done
+}
+
+vermp() {
+  echo $(printf "%x\n" $(date +%y%j%H%M))
+}
