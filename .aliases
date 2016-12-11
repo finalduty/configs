@@ -1,5 +1,5 @@
 #!/bin/bash
-### andy.dustin@gmail.com [rev:9be5e01]
+### andy.dustin@gmail.com [rev:9be5e6f]
 
 ## Aliases
 alias docker='sudo docker'
@@ -7,13 +7,3 @@ alias pacman='sudo pacman'
 alias rpi='ssh `cat ~/docs/myip.txt`'
 alias systemctl='systemctl --no-pager'
 
-## Functions
-passgen() {
-  for i in {1..6}; do 
-    echo $(openssl rand -rand /dev/urandom -base64 28 2>/dev/null | sed -e 's|[+/]||g' | head -c12) | egrep -v '^[0-9]'
-  done | head -3
-}
-
-vermp() {
-  echo $(printf "%x\n" $(date +%y%j%H%M))
-}
