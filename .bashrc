@@ -1,6 +1,7 @@
-### andy.dustin@gmail.com [rev:9be3aaa]
+### andy.dustin@gmail.com [rev:9be5e60]
 [[ $- != *i* ]] && return
 
+umask 027
 shopt -s checkwinsize
 shopt -s histappend
 export HISTCONTROL=ignoredups:ignorespace
@@ -13,7 +14,7 @@ export EDITOR="/usr/bin/vim"
 [ $(id -u) -eq 0 ] && PS1='[\[\033[01;31m\]\u@\h\[\033[00m\] \l \[\033[01;34m\]\w\[\033[00m\]]# '
 [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
-umask 027
+unalias -a
 alias chmod='chmod -c'
 alias chown='chown -c'
 alias cp='cp -iv'
