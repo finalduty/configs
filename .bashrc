@@ -1,4 +1,4 @@
-### andy.dustin@gmail.com [rev:9be5e6f]
+### andy.dustin@gmail.com [rev:9be87af]
 [[ $- != *i* ]] && return
 
 umask 027
@@ -19,7 +19,7 @@ unalias -a
 alias chmod='chmod -c'
 alias chown='chown -c'
 alias cp='cp -iv'
-alias ls='ls -G'
+alias ls='ls --color=always'
 alias mv='mv -iv'
 alias rm='rm -v'
 alias ssh='ssh -At'
