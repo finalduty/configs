@@ -1,10 +1,10 @@
-""" andy@webdrive.co.nz [rev: 91aa6a4]
+""" andy.dustin@gmail.com [rev: a28b899]
 colorscheme koehler
 syntax on
 filetype indent plugin on
 
 set tabstop=4       
-set shiftwidth=2    
+set shiftwidth=4    
 set expandtab       
 set smarttab        
 
