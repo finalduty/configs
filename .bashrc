@@ -25,7 +25,7 @@ alias mv='mv -iv'
 alias rm='rm -v'
 alias ssh='ssh -At'
 alias systemclt='systemctl'
-alias systemctl='--no-pager'
+alias systemctl='systemctl -l --no-pager'
 
 passgen() {
   for i in {1..6}; do 
