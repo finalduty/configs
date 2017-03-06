@@ -1,4 +1,4 @@
-### andy.dustin@gmail.com [rev:a2b7810]
+### andy.dustin@gmail.com [rev:a2befec]
 
 [[ $- != *i* ]] && return
 
@@ -19,6 +19,7 @@ alias chmod='chmod -c'
 alias chown='chown -c'
 alias cp='cp -iv'
 alias ls='ls --color=always'
+alias ln='ln -v' 
 alias mkdir='mkdir -pv'
 alias mv='mv -iv'
 alias rm='rm -v'
