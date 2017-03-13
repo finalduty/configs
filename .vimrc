@@ -1,4 +1,4 @@
-""" andy.dustin@gmail.com [rev: a28b899]
+""" andy.dustin@gmail.com [rev: 2d0019]
 colorscheme koehler
 syntax on
 filetype indent plugin on
@@ -7,10 +7,6 @@ set tabstop=4
 set shiftwidth=4    
 set expandtab       
 set smarttab        
-
-set foldmethod=manual
-au BufWinLeave * mkview
-au BufWinEnter * silent loadview
 
 set showmatch       
 set ignorecase      
